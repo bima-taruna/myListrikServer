@@ -46,7 +46,7 @@ const storage = multer.diskStorage({
   const uploadOptions = multer({ storage: storage })
 
 //GET
-router.get(`/`, async (req,res)=>{
+router.get(`/`,authJwt, async (req,res)=>{
     const servicesList = await Service.find().select('name icon');
 
     if(!servicesList) {
