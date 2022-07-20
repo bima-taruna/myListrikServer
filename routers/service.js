@@ -22,11 +22,11 @@ let resultHandler = function (err) {
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        let files = fs.readdirSync(__dirname + '/public/uploads');
-        console.log(file.originalname)
-        if (files.includes(file.originalname + '-' + req.auth.userId)) {
-            fs.unlinkSync(__dirname + '\\..\\public\\uploads' + file.originalname + '-' + req.auth.userId)
-        }
+        // let files = fs.readdirSync(__dirname + '/public/uploads');
+        // console.log(file.originalname)
+        // if (files.includes(file.originalname + '-' + req.auth.userId)) {
+        //     fs.unlinkSync(__dirname + '\\..\\public\\uploads' + file.originalname + '-' + req.auth.userId)
+        // }
         const isValid = FILE_TYPE_MAP[file.mimetype];
         let uploadError = new Error('tipe file gambar salah');
 
