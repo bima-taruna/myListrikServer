@@ -22,7 +22,7 @@ let resultHandler = function (err) {
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        let files = fs.readdirSync(__dirname + '\\..\\public\\uploads');
+        let files = fs.readdirSync(__dirname + '/public/uploads');
         console.log(file.originalname)
         if (files.includes(file.originalname + '-' + req.auth.userId)) {
             fs.unlinkSync(__dirname + '\\..\\public\\uploads' + file.originalname + '-' + req.auth.userId)
@@ -33,7 +33,7 @@ const storage = multer.diskStorage({
         if (isValid) {
             uploadError = null
         }
-      cb(uploadError, __dirname)
+      cb(uploadError, 'public/uploads')
     },
     filename: function (req, file, cb) {
       const fileName = file.originalname.split(' ').join('-');
