@@ -4,7 +4,7 @@ const {City} = require('../models/city');
 const authJwt = require('../helpers/jwt');
 
 //GET
-router.get(`/`,authJwt, async (req,res)=>{
+router.get(`/`, async (req,res)=>{
     const cityList = await City.find();
 
     if(!cityList) {
@@ -15,7 +15,7 @@ router.get(`/`,authJwt, async (req,res)=>{
 });
 
 //GETBYID
-router.get(`/:id`, async (req,res)=>{
+router.get(`/:id`,authJwt, async (req,res)=>{
     const city= await City.findById(req.params.id);
 
     if(!city) {
