@@ -22,7 +22,7 @@ let resultHandler = function (err) {
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        // let files = fs.readdirSync(__dirname + '/public/uploads');
+        // let files = fs.readdirSync(__dirname + '\\..\\public\\uploads');
         // console.log(file.originalname)
         // if (files.includes(file.originalname + '-' + req.auth.userId)) {
         //     fs.unlinkSync(__dirname + '\\..\\public\\uploads' + file.originalname + '-' + req.auth.userId)
@@ -117,7 +117,7 @@ router.post(`/`,authJwt,uploadOptions.single('icon'), async (req,res)=>{
 });
 
 //DELETE
-router.delete('/:id',authJwt,uploadOptions.single('icon'), (req,res)=>{
+router.delete('/:id',authJwt, (req,res)=>{
     
     if (req.auth.role !== 'admin') {
         return res.status(401).json({message : 'anda tidak memiliki izin untuk mengakses laman ini', success:false});
