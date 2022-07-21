@@ -138,8 +138,9 @@ router.delete('/:id',authJwt, async (req,res)=>{
     //     });
     // }); 
     try {
-        let service = await Service.findByIdAndRemove(req.params.id);
+        let service = await Service.findById(req.params.id);
         await cloudinary.uploader.destroy(service.public_id);
+        await service.remove();
         res.json(service);
     } catch (err) {
         console.log(err)
