@@ -105,6 +105,7 @@ router.post(`/`,authJwt,uploadOptions.single('icon'), async (req,res)=>{
         name : req.body.name,
         description : req.body.description,
         icon : basePath.secure_url,
+        cloudinary_id : basePath.public_id
     });
 
     service = await service.save();
@@ -138,7 +139,7 @@ router.delete('/:id',authJwt, async (req,res)=>{
     // }); 
     try {
         let service = await Service.findByIdAndRemove(req.params.id);
-        await cloudinary.uploader.destroy(service.secure_url);
+        await cloudinary.uploader.destroy(service.public_id);
         res.json(service);
     } catch (err) {
         console.log(err)

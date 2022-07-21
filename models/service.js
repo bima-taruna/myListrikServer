@@ -13,6 +13,9 @@ const serviceSchema = mongoose.Schema({
         type: String,
         required : true
     },
+    cloudinary_id : {
+        type: String
+    },
     dateCreated : {
         type: Date,
         default: Date.now
