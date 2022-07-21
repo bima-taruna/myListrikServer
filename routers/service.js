@@ -121,10 +121,7 @@ router.post(`/`,authJwt,uploadOptions.single('icon'), async (req,res)=>{
 //DELETE
 router.delete('/:id',authJwt, async (req,res)=>{
     
-    if (req.auth.role !== 'admin') {
-        return res.status(401).json({message : 'anda tidak memiliki izin untuk mengakses laman ini', success:false});
-    } else {
-     
+   
     // Service.findByIdAndRemove(req.params.id).then(service =>{
     //     if(service){
     //         return res.status(200).json({success:true,message:'pelayanan berhasil dihapus!'});
@@ -138,8 +135,11 @@ router.delete('/:id',authJwt, async (req,res)=>{
     //     });
     // }); 
     try {
+        if (req.auth.role !== 'admin') {
+            return res.status(401).json({message : 'anda tidak memiliki izin untuk mengakses laman ini', success:false});
+        }  
         let service = await Service.findById(req.params.id);
-        await cloudinary.uploader.destroy(service.public_id);
+        await cloudinary.uploader.destroy(service.cloudinary_id);
         await service.remove();
         res.json(service);
     } catch (err) {
@@ -148,6 +148,6 @@ router.delete('/:id',authJwt, async (req,res)=>{
    
 }
     
-})
+)
 
 module.exports = router;
