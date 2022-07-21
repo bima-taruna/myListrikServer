@@ -99,7 +99,7 @@ router.post(`/`,authJwt,uploadOptions.single('icon'), async (req,res)=>{
     if(!file) return res.status(400).send('tidak ada gambar pada request');
 
     const fileName = req.file.filename;
-    const basePath = await cloudinary.default.uploader.upload(req.file.path)
+    const basePath = await cloudinary.uploader.upload(req.file.path)
     // `${req.protocol}://${req.get('host')}/public/uploads/`;
     let service = new Service({
         name : req.body.name,
