@@ -69,24 +69,24 @@ router.get(`/:id`, async (req,res)=>{
 
 //UPDATE
 router.put(`/:id`,authJwt,uploadOptions.single('icon'), async (req,res)=>{
-    
-    if (req.auth.role !== 'admin') {
-        return res.status(401).json({message : 'anda tidak memiliki izin untuk mengakses laman ini',success:false});
-    } else {
-        const fileName = req.file.filename;
-        const basePath = `${req.protocol}://${req.get('host')}/public/uploads/`;
-        
-    const service = await Service.findByIdAndUpdate(req.params.id,{
-        name : req.body.name,
-        description : req.body.description,
-        icon : `${basePath}${fileName}`,
-    }, {new:true});
-    
-    if(!service) {
-        return res.status(400).send('pelayanan gagal diperbaharui');
+    try {
+        if (req.auth.role !== 'admin') {
+            return res.status(401).json({message : 'anda tidak memiliki izin untuk mengakses laman ini',success:false});
+        }
+        let service = await Service.findById(req.params.id);
+        await cloudinary.uploader.destroy(service.cloudinary_id);
+        const basePath = await cloudinary.uploader.upload(req.file.path);
+        const serviceData =  {
+            name : req.body.name,
+            description : req.body.description,
+            icon : basePath.secure_url,
+            cloudinary_id : basePath.public_id
+        };
+        service = await Service.findByIdAndUpdate(req.params.id, serviceData, {new:true})
+        res.json(service)
+    } catch (err) {
+        console.log(err)
     }
-    
-    res.send(service); }
 });
 
 //POST
@@ -120,20 +120,6 @@ router.post(`/`,authJwt,uploadOptions.single('icon'), async (req,res)=>{
 
 //DELETE
 router.delete('/:id',authJwt, async (req,res)=>{
-    
-   
-    // Service.findByIdAndRemove(req.params.id).then(service =>{
-    //     if(service){
-    //         return res.status(200).json({success:true,message:'pelayanan berhasil dihapus!'});
-    //     } else {
-    //         return res.status(404).json({success:true,message:'pelayanan tidak ada!, pelayanan gagal dihapus!'});
-    //     }  
-    // }).catch(err=>{
-    //     res.status(400).json({
-    //         error : err,
-    //         success : false
-    //     });
-    // }); 
     try {
         if (req.auth.role !== 'admin') {
             return res.status(401).json({message : 'anda tidak memiliki izin untuk mengakses laman ini', success:false});
