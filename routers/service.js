@@ -104,7 +104,7 @@ router.post(`/`,authJwt,uploadOptions.single('icon'), async (req,res)=>{
     let service = new Service({
         name : req.body.name,
         description : req.body.description,
-        icon : `${basePath}${fileName}`,
+        icon : basePath.secure_url,
     });
 
     service = await service.save();
