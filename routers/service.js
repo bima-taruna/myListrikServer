@@ -118,25 +118,33 @@ router.post(`/`,authJwt,uploadOptions.single('icon'), async (req,res)=>{
 });
 
 //DELETE
-router.delete('/:id',authJwt, (req,res)=>{
+router.delete('/:id',authJwt, async (req,res)=>{
     
     if (req.auth.role !== 'admin') {
         return res.status(401).json({message : 'anda tidak memiliki izin untuk mengakses laman ini', success:false});
     } else {
      
-    Service.findByIdAndRemove(req.params.id).then(service =>{
-        fs.unlinkSync(req.file.path)
-        if(service){
-            return res.status(200).json({success:true,message:'pelayanan berhasil dihapus!'});
-        } else {
-            return res.status(404).json({success:true,message:'pelayanan tidak ada!, pelayanan gagal dihapus!'});
-        }  
-    }).catch(err=>{
-        res.status(400).json({
-            error : err,
-            success : false
-        });
-    }); }
+    // Service.findByIdAndRemove(req.params.id).then(service =>{
+    //     if(service){
+    //         return res.status(200).json({success:true,message:'pelayanan berhasil dihapus!'});
+    //     } else {
+    //         return res.status(404).json({success:true,message:'pelayanan tidak ada!, pelayanan gagal dihapus!'});
+    //     }  
+    // }).catch(err=>{
+    //     res.status(400).json({
+    //         error : err,
+    //         success : false
+    //     });
+    // }); 
+    try {
+        let service = await Service.findByIdAndRemove(req.params.id);
+        await cloudinary.uploader.destroy(service.secure_url);
+        res.json(service);
+    } catch (err) {
+        console.log(err)
+    }
+   
+}
     
 })
 
