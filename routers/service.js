@@ -5,7 +5,7 @@ const authJwt = require('../helpers/jwt');
 const multer = require('multer');
 const { unlink, unlinkSync } = require('node:fs');
 const fs = require('fs')
-
+const cloudinary = require('../helpers/cloudinary')
 const FILE_TYPE_MAP = {
     'image/png' : 'png',
     'image/jpeg' : 'jpeg',
@@ -99,7 +99,8 @@ router.post(`/`,authJwt,uploadOptions.single('icon'), async (req,res)=>{
     if(!file) return res.status(400).send('tidak ada gambar pada request');
 
     const fileName = req.file.filename;
-    const basePath = `${req.protocol}://${req.get('host')}/public/uploads/`;
+    const basePath = await cloudinary.default.uploader.upload(req.file.path)
+    // `${req.protocol}://${req.get('host')}/public/uploads/`;
     let service = new Service({
         name : req.body.name,
         description : req.body.description,
