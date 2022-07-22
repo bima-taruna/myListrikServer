@@ -7,7 +7,20 @@ const {Perusahaan} = require('../models/perusahaan');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const authJwt = require('../helpers/jwt');
+const multer = require('multer');
+const cloudinary = require('../helpers/cloudinary')
 
+const uploadOptions = multer({
+    storage : multer.diskStorage({}),
+    fileFilter: (req,file,cb) => {
+        let ext = path.extname(file.originalname);
+        if (ext !== ".jpg" && ext !== ".jpeg" && ext !== ".png") {
+            cb(new Error('tipe file tidak support'), false)
+            return;
+        }
+        cb(null,true)
+    },
+ })
 //GET
 router.get(`/`, authJwt, async (req,res)=>{
     if (req.auth.role !== 'admin') {
@@ -51,7 +64,7 @@ router.get(`/:id`,authJwt, async (req,res)=>{
 });
 
 //POST
-router.post(`/`,authJwt, async (req,res)=>{
+router.post(`/`,authJwt,uploadOptions.single('avatar'), async (req,res)=>{
     if (req.auth.role !== 'admin') {
         return res.status(401).json({message : 'anda tidak memiliki izin untuk mengakses laman ini',success:false});
     } else {
@@ -67,14 +80,18 @@ router.post(`/`,authJwt, async (req,res)=>{
                 if(!perusahaan) return res.status(400).send('data perusahaan belum dipilih atau tidak ada');
             }
             
+            const basePath = await cloudinary.uploader.upload(req.file.path)
             let user = new User({
                 name : req.body.name,
+                avatar : basePath.secure_url,
                 email : req.body.email,
                 noHp : req.body.noHp,
                 alamat : req.body.alamat,
                 passwordHash : bcrypt.hashSync(req.body.password, 10),
                 city : req.body.city,
-                role : req.body.role
+                perusahaan : req.body.perusahaan,
+                role : req.body.role,
+                cloudinary_id : basePath.public_id
             });
 
             user = await user.save();
@@ -143,6 +160,78 @@ router.post(`/login`, async (req,res)=>{
         res.status(200).send({user: user.email, token : token});
     } else {
         res.status(400).send('password salah');
+    }
+});
+
+router.delete(`/:id`,authJwt, async (req,res)=>{
+    try {
+        if (req.auth.role !== 'admin') {
+            return res.status(401).json({message : 'anda tidak memiliki izin untuk mengakses laman ini', success:false});
+        } 
+         
+        let user = await User.findById(req.params.id);
+        await cloudinary.uploader.destroy(user.cloudinary_id);
+        await user.remove();
+        res.json(user);
+    } catch (err) {
+        console.log(err)
+    }  
+});
+
+router.put(`/customer/:id`,authJwt,uploadOptions.single('avatar'), async (req,res)=>{
+    try {
+        if (userExist) {
+            return res.status(400).send({ message: "Email ini sudah didaftarkan" });
+        } else {
+        let user = await User.findById(req.params.id);
+        await cloudinary.uploader.destroy(user.cloudinary_id);
+        const basePath = await cloudinary.uploader.upload(req.file.path);
+        const userData =  {
+            name : req.body.name,
+            avatar : basePath.secure_url,
+            email : req.body.email,
+            noHp : req.body.noHp,
+            alamat : req.body.alamat,
+            passwordHash : bcrypt.hashSync(req.body.password, 10),
+            city : req.body.city,
+            perusahaan : req.body.perusahaan,
+            role : req.body.role,
+            cloudinary_id : basePath.public_id
+        };
+        user = await User.findByIdAndUpdate(req.params.id, userData, {new:true})
+        res.json(user)
+    }} catch (err) {
+        console.log(err)
+    }
+});
+
+router.put(`/:id`,authJwt,uploadOptions.single('avatar'), async (req,res)=>{
+    try {
+        if (req.auth.role !== 'admin') {
+            return res.status(401).json({message : 'anda tidak memiliki izin untuk mengakses laman ini',success:false});
+        }
+        if (userExist) {
+            return res.status(400).send({ message: "Email ini sudah didaftarkan" });
+        } else {
+        let user = await User.findById(req.params.id);
+        await cloudinary.uploader.destroy(user.cloudinary_id);
+        const basePath = await cloudinary.uploader.upload(req.file.path);
+        const userData =  {
+            name : req.body.name,
+            avatar : basePath.secure_url,
+            email : req.body.email,
+            noHp : req.body.noHp,
+            alamat : req.body.alamat,
+            passwordHash : bcrypt.hashSync(req.body.password, 10),
+            city : req.body.city,
+            perusahaan : req.body.perusahaan,
+            role : req.body.role,
+            cloudinary_id : basePath.public_id
+        };
+        user = await User.findByIdAndUpdate(req.params.id, userData, {new:true})
+        res.json(user)
+    }} catch (err) {
+        console.log(err)
     }
 });
 

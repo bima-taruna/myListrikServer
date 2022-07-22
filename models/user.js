@@ -7,9 +7,13 @@ const userSchema = mongoose.Schema({
         type : String,
         required : true
     },
+    avatar : {
+        type : String,
+    },
     email :{
         type : String,
-        required: true
+        required: true,
+        unique:true
     },
     noHp : {
         type : Number,
@@ -37,6 +41,9 @@ const userSchema = mongoose.Schema({
         enum : levels,
         required : true,
         default : 'user'
+    },
+    cloudinary_id : {
+        type: String
     }
 
 });
