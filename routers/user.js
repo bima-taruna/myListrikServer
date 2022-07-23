@@ -26,7 +26,7 @@ router.get(`/`, authJwt, async (req,res)=>{
     if (req.auth.role !== 'admin') {
         return res.status(401).json({message : 'anda tidak memiliki izin untuk mengakses laman ini',success:false});
     } else {
-        const usersList = await User.find().select('-passwordHash');
+        const usersList = await User.find().select('-passwordHash').populate('city');
 
         if(!usersList) {
             res.status(500).json({success:false});
