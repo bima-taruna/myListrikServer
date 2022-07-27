@@ -9,6 +9,7 @@ const jwt = require('jsonwebtoken');
 const authJwt = require('../helpers/jwt');
 const multer = require('multer');
 const cloudinary = require('../helpers/cloudinary')
+const path = require('path')
 
 const uploadOptions = multer({
     storage : multer.diskStorage({}),
