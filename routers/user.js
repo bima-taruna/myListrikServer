@@ -120,6 +120,7 @@ router.post(`/register`,uploadOptions.single('avatar'), async (req,res)=>{
     }
     
     const basePath = await cloudinary.uploader.upload(req.file.path)
+
     let user = new User({
         name : req.body.name,
         avatar : basePath.secure_url,
