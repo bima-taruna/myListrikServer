@@ -105,7 +105,7 @@ router.post(`/`,authJwt,uploadOptions.single('avatar'), async (req,res)=>{
 });
 
 //POSTRegister
-router.post(`/register`, async (req,res)=>{
+router.post(`/register`,uploadOptions.single('avatar'), async (req,res)=>{
     const userExist = await User.findOne({ email: req.body.email });
     if (userExist) {
         return res.status(400).send({ message: "Email ini sudah didaftarkan" });
@@ -118,16 +118,18 @@ router.post(`/register`, async (req,res)=>{
         if(!perusahaan) return res.status(400).send('data perusahaan belum dipilih atau tidak ada');
     }
     
-   
+    const basePath = await cloudinary.uploader.upload(req.file.path)
     let user = new User({
         name : req.body.name,
+        avatar : basePath.secure_url,
         email : req.body.email,
         noHp : req.body.noHp,
         alamat : req.body.alamat,
         passwordHash : bcrypt.hashSync(req.body.password, 10),
         city : req.body.city,
         perusahaan : req.body.perusahaan,
-        role : req.body.role
+        role : req.body.role,
+        cloudinary_id : basePath.public_id
     });
 
     user = await user.save();
