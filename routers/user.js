@@ -193,7 +193,7 @@ router.put(`/customer/:id`,authJwt,uploadOptions.single('avatar'), async (req,re
             email : req.body.email || user.email,
             noHp : req.body.noHp || user.noHp,
             alamat : req.body.alamat || user.alamat,
-            city : req.body.city || user.city,
+            city : req.body.city || user.city.id,
             perusahaan : req.body.perusahaan || user.perusahaan,
             role : req.body.role || user.role,
             cloudinary_id : basePath.public_id || user.cloudinary_id
