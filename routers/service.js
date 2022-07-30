@@ -52,8 +52,8 @@ router.put(`/:id`,authJwt,uploadOptions.single('icon'), async (req,res)=>{
         const serviceData =  {
             name : req.body.name,
             description : req.body.description,
-            icon : basePath.secure_url,
-            cloudinary_id : basePath.public_id
+            icon : req.body.icon,
+            cloudinary_id : req.body.cloudinary_id
         };
         service = await Service.findByIdAndUpdate(req.params.id, serviceData, {new:true})
         res.json(service)
