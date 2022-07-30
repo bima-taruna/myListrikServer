@@ -184,6 +184,7 @@ router.delete(`/:id`,authJwt, async (req,res)=>{
 
 router.put(`/customer/:id`,authJwt,uploadOptions.single('avatar'), async (req,res)=>{
     try {
+        const userExist = await User.findOne({ email: req.body.email });
         if (userExist) {
             return res.status(400).send({ message: "Email ini sudah didaftarkan" });
         } else {
@@ -211,6 +212,7 @@ router.put(`/customer/:id`,authJwt,uploadOptions.single('avatar'), async (req,re
 
 router.put(`/:id`,authJwt,uploadOptions.single('avatar'), async (req,res)=>{
     try {
+        const userExist = await User.findOne({ email: req.body.email });
         if (req.auth.role !== 'admin') {
             return res.status(401).json({message : 'anda tidak memiliki izin untuk mengakses laman ini',success:false});
         }
