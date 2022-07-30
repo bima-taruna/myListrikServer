@@ -184,10 +184,6 @@ router.delete(`/:id`,authJwt, async (req,res)=>{
 
 router.put(`/customer/:id`,authJwt,uploadOptions.single('avatar'), async (req,res)=>{
     try {
-        const userExist = await User.findOne({ email: req.body.email });
-        if (userExist) {
-            return res.status(400).send({ message: "Email ini sudah didaftarkan" });
-        } else {
         let user = await User.findById(req.params.id);
         await cloudinary.uploader.destroy(user.cloudinary_id);
         const basePath = await cloudinary.uploader.upload(req.file.path);
@@ -205,7 +201,7 @@ router.put(`/customer/:id`,authJwt,uploadOptions.single('avatar'), async (req,re
         };
         user = await User.findByIdAndUpdate(req.params.id, userData, {new:true})
         res.json(user)
-    }} catch (err) {
+    } catch (err) {
         console.log(err)
     }
 });
