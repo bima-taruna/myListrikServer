@@ -188,16 +188,15 @@ router.put(`/customer/:id`,authJwt,uploadOptions.single('avatar'), async (req,re
         await cloudinary.uploader.destroy(user.cloudinary_id);
         const basePath = await cloudinary.uploader.upload(req.file.path);
         const userData =  {
-            name : req.body.name,
-            avatar : req.body.avatar,
-            email : req.body.email,
-            noHp : req.body.noHp,
-            alamat : req.body.alamat,
-            passwordHash : bcrypt.hashSync(req.body.password, 10),
-            city : req.body.city,
-            perusahaan : req.body.perusahaan,
-            role : req.body.role,
-            cloudinary_id : req.body.cloudinary_id
+            name : req.body.name || user.name , 
+            avatar : basePath.secure_url || user.avatar,
+            email : req.body.email || user.email,
+            noHp : req.body.noHp || user.noHp,
+            alamat : req.body.alamat || user.alamat,
+            city : req.body.city || user.city,
+            perusahaan : req.body.perusahaan || user.perusahaan,
+            role : req.body.role || user.role,
+            cloudinary_id : basePath.public_id || user.cloudinary_id
         };
         user = await User.findByIdAndUpdate(req.params.id, userData, {new:true})
         res.json(user)

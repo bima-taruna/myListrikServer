@@ -50,10 +50,10 @@ router.put(`/:id`,authJwt,uploadOptions.single('icon'), async (req,res)=>{
         await cloudinary.uploader.destroy(service.cloudinary_id);
         const basePath = await cloudinary.uploader.upload(req.file.path);
         const serviceData =  {
-            name : req.body.name,
-            description : req.body.description,
-            icon : req.body.icon,
-            cloudinary_id : req.body.cloudinary_id
+            name : req.body.name || service.name,
+            description : req.body.description || service.description,
+            icon : basePath.secure_url || service.icon,
+            cloudinary_id : basePath.public_id || service.cloudinary_id
         };
         service = await Service.findByIdAndUpdate(req.params.id, serviceData, {new:true})
         res.json(service)
