@@ -55,8 +55,8 @@ router.put(`/:id`,authJwt,uploadOptions.single('icon'), async (req,res)=>{
         //        return basePath.secure_url
         //     }
         // }
-
-        const basePath = await cloudinary.uploader.explicit(req.file.path,{type:'fetch',invalidate:true});
+        await cloudinary.uploader.destroy(service.cloudinary_id);
+        const basePath = await cloudinary.uploader.upload(req.file.path);
         console.log(req.file.path)
         const serviceData =  {
             name : req.body.name || service.name,
