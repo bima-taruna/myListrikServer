@@ -49,12 +49,13 @@ router.put(`/:id`,authJwt,uploadOptions.single('icon'), async (req,res)=>{
         }
         let service = await Service.findById(req.params.id);
         const tes = () => {
-            if(!req.file.path){
+            if(req.file.path === undefined){
                 service.icon
             } else {
                 basePath.secure_url
             }
         }
+
         const basePath = await cloudinary.uploader.upload(req.file.path, {public_id:service.cloudinary_id, invalidate:true});
         const serviceData =  {
             name : req.body.name || service.name,
