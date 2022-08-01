@@ -47,7 +47,6 @@ router.put(`/:id`,authJwt,uploadOptions.single('icon'), async (req,res)=>{
             return res.status(401).json({message : 'anda tidak memiliki izin untuk mengakses laman ini',success:false});
         }
         let service = await Service.findById(req.params.id);
-        await cloudinary.uploader.destroy(service.cloudinary_id);
         const basePath = await cloudinary.uploader.explicit(service.cloudinary_id, {type:"fetch",invalidate:true});
         const serviceData =  {
             name : req.body.name || service.name,
