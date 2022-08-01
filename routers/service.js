@@ -42,26 +42,26 @@ router.get(`/:id`,authJwt, async (req,res)=>{
 
 //UPDATE
 router.put(`/:id`,authJwt,uploadOptions.single('icon'), async (req,res)=>{
-   
+    console.log(req.file.path)
     try {
         if (req.auth.role !== 'admin') {
             return res.status(401).json({message : 'anda tidak memiliki izin untuk mengakses laman ini',success:false});
         }
         let service = await Service.findById(req.params.id);
-        // let tes = () => {
-        //     if(req.file.path = undefined){
-        //        return service.icon
-        //     } else {
-        //        return basePath.secure_url
-        //     }
-        // }
+        let tes = () => {
+            if(req.file.path = undefined){
+               return service.icon
+            } else {
+               return basePath.secure_url
+            }
+        }
         await cloudinary.uploader.destroy(service.cloudinary_id);
         const basePath = await cloudinary.uploader.upload(req.file.path);
-        console.log(req.file.path)
+        
         const serviceData =  {
             name : req.body.name || service.name,
             description : req.body.description || service.description,
-            icon : basePath.secure_url || service.icon,
+            icon : await tes(),
             cloudinary_id : basePath.public_id || service.cloudinary_id
         };
         service = await Service.findByIdAndUpdate(req.params.id, serviceData, {new:true})
