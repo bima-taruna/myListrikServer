@@ -48,8 +48,8 @@ router.put(`/:id`,authJwt,uploadOptions.single('icon'), async (req,res)=>{
             return res.status(401).json({message : 'anda tidak memiliki izin untuk mengakses laman ini',success:false});
         }
         let service = await Service.findById(req.params.id);
-        const tes = () => {
-            if(req.file.path === undefined){
+        let tes = () => {
+            if(req.file.path == undefined){
                 service.icon
             } else {
                 basePath.secure_url
