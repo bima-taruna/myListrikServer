@@ -52,14 +52,14 @@ router.put(`/:id`,authJwt,uploadOptions.single('icon'), async (req,res)=>{
             if(req.file === undefined){
                hasil = service.icon
             } else {
-                await cloudinary.uploader.destroy(service.cloudinary_id);
-                const basePath = await cloudinary.uploader.upload(req.file.path);
+               
                hasil = basePath.secure_url
             }
             return hasil
         }
         
-        
+        await cloudinary.uploader.destroy(service.cloudinary_id);
+        const basePath = await cloudinary.uploader.upload(req.file.path);
         const serviceData =  {
             name : req.body.name || service.name,
             description : req.body.description || service.description,
