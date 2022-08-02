@@ -43,6 +43,7 @@ router.get(`/:id`,authJwt, async (req,res)=>{
 //UPDATE
 router.put(`/:id`,authJwt,uploadOptions.single('icon'), async (req,res)=>{
     try {
+        console.log(req.body.avatar)
         if (req.auth.role !== 'admin') {
             return res.status(401).json({message : 'anda tidak memiliki izin untuk mengakses laman ini',success:false});
         }
