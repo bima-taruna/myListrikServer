@@ -43,27 +43,35 @@ router.get(`/:id`,authJwt, async (req,res)=>{
 //UPDATE
 router.put(`/:id`,authJwt,uploadOptions.single('icon'), async (req,res)=>{
     try {
-        console.log(req.body.icon)
         if (req.auth.role !== 'admin') {
             return res.status(401).json({message : 'anda tidak memiliki izin untuk mengakses laman ini',success:false});
-        }
-        let service = await Service.findById(req.params.id);
-        let tes = () => {
-            let hasil ;
-            {req.body.icon === undefined ? hasil = service.avatar : hasil = basePath.secure_url}
-            return hasil
+        } else {
+            if (req.file){
+                let service = await Service.findById(req.params.id);
+                await cloudinary.uploader.destroy(service.cloudinary_id);
+                const basePath = await cloudinary.uploader.upload(req.file.path);
+                const serviceData =  {
+                    name : req.body.name || service.name,
+                    description : req.body.description || service.description,
+                    icon : basePath.secure_url || service.avatar,
+                    cloudinary_id : basePath.public_id || service.cloudinary_id
+                };
+                service = await Service.findByIdAndUpdate(req.params.id, serviceData, {new:true})
+                res.json(service)
+            } else {
+                let service = await Service.findById(req.params.id);
+                const serviceData =  {
+                    name : req.body.name || service.name,
+                    description : req.body.description || service.description,
+                    icon : service.avatar,
+                    cloudinary_id : service.cloudinary_id
+                };
+                service = await Service.findByIdAndUpdate(req.params.id, serviceData, {new:true})
+                res.json(service)
+            }
+          
         }
         
-        await cloudinary.uploader.destroy(service.cloudinary_id);
-        const basePath = await cloudinary.uploader.upload(req.file.path);
-        const serviceData =  {
-            name : req.body.name || service.name,
-            description : req.body.description || service.description,
-            icon : tes(),
-            cloudinary_id : basePath.public_id || service.cloudinary_id
-        };
-        service = await Service.findByIdAndUpdate(req.params.id, serviceData, {new:true})
-        res.json(service)
     } catch (err) {
         console.log(err)
     }
