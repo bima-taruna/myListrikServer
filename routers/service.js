@@ -49,7 +49,7 @@ router.put(`/:id`,authJwt,uploadOptions.single('icon'), async (req,res)=>{
         let service = await Service.findById(req.params.id);
         let tes = () => {
             let hasil ;
-            if(!req.file.path){
+            if(req.file.path === undefined){
                hasil = service.icon
             } else {
                hasil = basePath.secure_url
@@ -58,7 +58,7 @@ router.put(`/:id`,authJwt,uploadOptions.single('icon'), async (req,res)=>{
         }
         await cloudinary.uploader.destroy(service.cloudinary_id);
         const basePath = await cloudinary.uploader.upload(req.file.path);
-        
+        console.log(req.file)
         const serviceData =  {
             name : req.body.name || service.name,
             description : req.body.description || service.description,
