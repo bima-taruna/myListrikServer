@@ -43,14 +43,14 @@ router.get(`/:id`,authJwt, async (req,res)=>{
 //UPDATE
 router.put(`/:id`,authJwt,uploadOptions.single('icon'), async (req,res)=>{
     try {
-        console.log(req.body.avatar)
+        console.log(req.body.icon)
         if (req.auth.role !== 'admin') {
             return res.status(401).json({message : 'anda tidak memiliki izin untuk mengakses laman ini',success:false});
         }
         let service = await Service.findById(req.params.id);
         let tes = () => {
             let hasil ;
-            {!req.files ? hasil = service.avatar : hasil = basePath.secure_url}
+            {!req.body.icon ? hasil = service.avatar : hasil = basePath.secure_url}
             return hasil
         }
         
