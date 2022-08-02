@@ -50,7 +50,7 @@ router.put(`/:id`,authJwt,uploadOptions.single('icon'), async (req,res)=>{
         let service = await Service.findById(req.params.id);
         let tes = () => {
             let hasil ;
-            {!req.body.icon ? hasil = service.avatar : hasil = basePath.secure_url}
+            {req.body.icon === undefined ? hasil = service.avatar : hasil = basePath.secure_url}
             return hasil
         }
         
