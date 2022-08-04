@@ -212,7 +212,7 @@ router.put(`/customer/:id`,authJwt,uploadOptions.single('avatar'), async (req,re
                 city : req.body.city || user.city.id,
                 perusahaan : req.body.perusahaan || user.perusahaan,
                 role : req.body.role || user.role,
-                cloudinary_id : basePath.public_id || user.cloudinary_id
+                cloudinary_id : user.cloudinary_id
             };
             user = await User.findByIdAndUpdate(req.params.id, userData, {new:true})
             res.json(user)
