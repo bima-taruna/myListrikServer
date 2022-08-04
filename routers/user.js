@@ -184,22 +184,42 @@ router.delete(`/:id`,authJwt, async (req,res)=>{
 
 router.put(`/customer/:id`,authJwt,uploadOptions.single('avatar'), async (req,res)=>{
     try {
-        let user = await User.findById(req.params.id);
-        await cloudinary.uploader.destroy(user.cloudinary_id);
-        const basePath = await cloudinary.uploader.upload(req.file.path);
-        const userData =  {
-            name : req.body.name || user.name , 
-            avatar : basePath.secure_url || user.avatar,
-            email : req.body.email || user.email,
-            noHp : req.body.noHp || user.noHp,
-            alamat : req.body.alamat || user.alamat,
-            city : req.body.city || user.city.id,
-            perusahaan : req.body.perusahaan || user.perusahaan,
-            role : req.body.role || user.role,
-            cloudinary_id : basePath.public_id || user.cloudinary_id
-        };
-        user = await User.findByIdAndUpdate(req.params.id, userData, {new:true})
-        res.json(user)
+        if(req.file){
+            let user = await User.findById(req.params.id).populate('city');
+            await cloudinary.uploader.destroy(user.cloudinary_id);
+            const basePath = await cloudinary.uploader.upload(req.file.path);
+            const userData =  {
+                name : req.body.name || user.name , 
+                avatar : basePath.secure_url || user.avatar,
+                email : req.body.email || user.email,
+                noHp : req.body.noHp || user.noHp,
+                alamat : req.body.alamat || user.alamat,
+                passwordHash : bcrypt.hashSync(req.body.password, 10) || user.passwordHash,
+                city : req.body.city || user.city.id,
+                perusahaan : req.body.perusahaan || user.perusahaan,
+                role : req.body.role || user.role,
+                cloudinary_id : basePath.public_id || user.cloudinary_id
+            };
+            user = await User.findByIdAndUpdate(req.params.id, userData, {new:true})
+            res.json(user)
+        } else {
+            let user = await User.findById(req.params.id).populate('city');
+            const userData =  {
+                name : req.body.name || user.name , 
+                avatar : user.avatar,
+                email : req.body.email || user.email,
+                noHp : req.body.noHp || user.noHp,
+                alamat : req.body.alamat || user.alamat,
+                passwordHash : bcrypt.hashSync(req.body.password, 10) || user.passwordHash,
+                city : req.body.city || user.city.id,
+                perusahaan : req.body.perusahaan || user.perusahaan,
+                role : req.body.role || user.role,
+                cloudinary_id : basePath.public_id || user.cloudinary_id
+            };
+            user = await User.findByIdAndUpdate(req.params.id, userData, {new:true})
+            res.json(user)
+        }
+       
     } catch (err) {
         console.log(err)
     }
