@@ -269,7 +269,7 @@ router.put(`/:id`,authJwt,uploadOptions.single('avatar'), async (req,res)=>{
     }
 });
 
-router.put(`/user/change-password/:id`,authJwt, async (req,res)=>{
+router.put(`/change-password/:id`,authJwt, async (req,res)=>{
     try {
        let user = await User.findById(req.params.id);
        if (!user) {
