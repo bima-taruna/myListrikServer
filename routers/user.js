@@ -206,7 +206,7 @@ router.put(`/customer/:id`,authJwt,uploadOptions.single('avatar'), async (req,re
                 name : req.body.name || user.name , 
                 avatar : basePath.secure_url || user.avatar,
                 email : req.body.email || user.email,
-                passwordHash : bcrypt.hashSync(req.body.password, 10) || user.passwordHash,
+                passwordHash : bcrypt.hashSync(req.body.password, 10),
                 noHp : req.body.noHp || user.noHp,
                 alamat : req.body.alamat || user.alamat,
                 city : req.body.city || user.city.id,
