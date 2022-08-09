@@ -42,8 +42,7 @@ router.get(`/teknisi`, authJwt, async (req,res)=>{
     if (req.auth.role === 'user' || req.auth.role === 'teknisi') {
         return res.status(401).json({message : 'anda tidak memiliki izin untuk mengakses laman ini', success:false});
     } else {
-        console.log(req.auth.city)
-        const usersList = await User.findOne({role : 'teknisi', city : `${(req.auth.city)}`}).select('-passwordHash');
+        const usersList = await User.findOne({role : 'teknisi' || 'user', city : `${(req.auth.city)}`}).populate('city').select('-passwordHash');
 
         if(!usersList) {
             res.status(500).json({success:false});
@@ -182,6 +181,21 @@ router.delete(`/:id`,authJwt, async (req,res)=>{
     }  
 });
 
+router.delete(`/teknisi/:id`,authJwt, async (req,res)=>{
+    try {
+        if (req.auth.role !== 'admin' || req.auth.role !== 'instalatir') {
+            return res.status(401).json({message : 'anda tidak memiliki izin untuk mengakses laman ini', success:false});
+        } 
+         
+        let user = await User.findById(req.params.id);
+        await cloudinary.uploader.destroy(user.cloudinary_id);
+        await user.remove();
+        res.json(user);
+    } catch (err) {
+        console.log(err)
+    }  
+});
+
 router.put(`/customer/:id`,authJwt,uploadOptions.single('avatar'), async (req,res)=>{
     try {
         if(req.file){
@@ -192,6 +206,7 @@ router.put(`/customer/:id`,authJwt,uploadOptions.single('avatar'), async (req,re
                 name : req.body.name || user.name , 
                 avatar : basePath.secure_url || user.avatar,
                 email : req.body.email || user.email,
+                passwordHash : bcrypt.hashSync(req.body.password, 10) || user.passwordHash,
                 noHp : req.body.noHp || user.noHp,
                 alamat : req.body.alamat || user.alamat,
                 city : req.body.city || user.city.id,
