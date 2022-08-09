@@ -269,6 +269,27 @@ router.put(`/:id`,authJwt,uploadOptions.single('avatar'), async (req,res)=>{
     }
 });
 
+router.put(`/users/change-password/:id`,authJwt, async (req,res)=>{
+    try {
+       let user = await User.findById(req.params.id);
+       if (!user) {
+           return res.status(400).send({ message: "User not found!" });
+       }
+       const isValidPassword = await bcrypt.compare(req.body.password,user.passwordHash);
+       if (!isValidPassword) {
+        return res.status(400).send('Tolong masukkan password lama dengan benar');
+        }
+
+        const hashedPassword = await bcrypt.hash(req.body.newPassword, 10);
+        const data = {
+            passwordHash : hashedPassword
+        }
+        user = await User.findByIdAndUpdate(req.params.id, data, {new:true})
+        res.json(user)
+    } catch (err) {
+        console.log(err)
+    }
+});
 
 
 module.exports = router;
