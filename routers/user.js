@@ -279,8 +279,8 @@ router.put(`/change-password/:id`,authJwt, async (req,res)=>{
        if (!isValidPassword) {
         return res.status(400).send('Tolong masukkan password lama dengan benar');
         }
-
-        const hashedPassword = await bcrypt.hash(req.body.newPassword, 10);
+        const salt = await bcrypt.genSalt(10)
+        const hashedPassword = await bcrypt.hash(req.body.newPassword, salt);
         const data = {
             passwordHash : hashedPassword
         }
