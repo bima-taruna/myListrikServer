@@ -270,6 +270,7 @@ router.put(`/:id`,authJwt,uploadOptions.single('avatar'), async (req,res)=>{
 });
 
 router.put(`/change-password/:id`,authJwt, async (req,res)=>{
+    console.log(req.body.password)
     try {
        let user = await User.findById(req.params.id);
        if (!user) {
@@ -280,7 +281,7 @@ router.put(`/change-password/:id`,authJwt, async (req,res)=>{
         return res.status(400).send('Tolong masukkan password lama dengan benar');
         }
         const salt = await bcrypt.genSalt(10)
-        console.log(req.body.password)
+        
         const hashedPassword = await bcrypt.hash(req.body.newPassword, salt);
         const data = {
             passwordHash : hashedPassword
