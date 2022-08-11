@@ -42,7 +42,7 @@ router.get(`/teknisi`, authJwt, async (req,res)=>{
     if (req.auth.role !== 'instalatir') {
         return res.status(401).json({message : 'anda tidak memiliki izin untuk mengakses laman ini', success:false});
     } else {
-        const usersList = await User.find({role : 'teknisi' && 'user', city : `${(req.auth.city)}`}).populate('city').populate('perusahaan').select('-passwordHash');
+        const usersList = await User.findOne({role : {$in : ['user','teknisi']}, city : `${(req.auth.city)}`}).populate('city').populate('perusahaan').select('-passwordHash');
 
         if(!usersList) {
             res.status(500).json({success:false});
