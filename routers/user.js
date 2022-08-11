@@ -39,7 +39,7 @@ router.get(`/`, authJwt, async (req,res)=>{
 
 //GETBYROLE = Teknisi and city
 router.get(`/teknisi`, authJwt, async (req,res)=>{
-    if (req.auth.role === 'user' || req.auth.role === 'teknisi') {
+    if (req.auth.role !== 'admin' || req.auth.role !== 'instalatir') {
         return res.status(401).json({message : 'anda tidak memiliki izin untuk mengakses laman ini', success:false});
     } else {
         const usersList = await User.findOne({role : 'teknisi' || 'user', city : `${(req.auth.city)}`}).populate('city').select('-passwordHash');
