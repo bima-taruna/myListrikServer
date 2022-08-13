@@ -54,7 +54,7 @@ router.get(`/teknisi`, authJwt, async (req,res)=>{
 
 //GETBYID
 router.get(`/:id`,authJwt, async (req,res)=>{
-    const user= await User.findById(req.params.id).populate('city').select('-passwordHash');
+    const user= await User.findById(req.params.id).populate('city').populate('perusahaan').select('-passwordHash');
 
     if(!user) {
         res.status(500).json({message: 'user dengan id yang diberikan tidak ditemukan'});
