@@ -19,7 +19,7 @@ const orderSchema = mongoose.Schema({
         type : String,
         required : true
     },
-    nomorHp : {
+    noHp : {
         type : Number,
         required : true
     },
