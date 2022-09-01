@@ -44,22 +44,9 @@ router.post(`/`, authJwt, async (req, res) => {
         success: false,
       });
   } else {
-    const orderItemIds = Promise.all(
-      req.body.orderItems.map(async function(orderItem) {
-        let newOrderItem = new OrderItem({
-          service: orderItem.service,
-      })
-
-        newOrderItem = await newOrderItem.save();
-
-        return newOrderItem._id;
-      })
-    );
-
-    const orderItemsResolved = await orderItemIds;
 
     let order = new Order({
-      orderItems: orderItemsResolved,
+      orderItems: req.body.orderItems._id,
       detail: req.body.detail,
       city: req.auth.city,
       alamat: req.body.alamat,
