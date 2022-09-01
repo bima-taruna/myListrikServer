@@ -45,7 +45,7 @@ router.post(`/`, authJwt, async (req, res) => {
       });
   } else {
     const orderItemIds = Promise.all(
-      req.body.orderItems?.map(async (orderItem) => {
+      req.body.orderItems.map(async (orderItem) => {
         let newOrderItem = new OrderItem({
           service: orderItem.service,
         });
