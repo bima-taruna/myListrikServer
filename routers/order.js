@@ -50,7 +50,7 @@ router.post(`/`, authJwt, async (req, res) => {
       detail: req.body.detail,
       city: req.auth.city,
       alamat: req.body.alamat,
-      nomorHp: req.body.nomorHp,
+      noHp: req.body.noHp,
       status: req.body.status,
       user: req.auth.userId,
     });
