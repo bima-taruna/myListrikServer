@@ -9,6 +9,7 @@ router.get(`/`,authJwt, async (req, res) => {
     .populate("user", "name")
     .populate("city", "name")
     .populate({ path: "orderItems", populate: "service" })
+    .populate("teknisi", "name")
     .sort({ dateOrdered: -1 });
 
   if (!ordersList) {
@@ -16,6 +17,42 @@ router.get(`/`,authJwt, async (req, res) => {
   }
 
   res.send(ordersList);
+});
+
+//GETBYCITY
+router.get(`/localorder`,authJwt, async (req, res) => {
+  const ordersList = await Order.find({city : `${req.auth.city}`})
+    .populate("user", "name")
+    .populate("city", "name")
+    .populate({ path: "orderItems", populate: "service" })
+    .populate("teknisi", "name")
+    .sort({ dateOrdered: -1 });
+
+  if (!ordersList) {
+    res.status(500).json({ success: false });
+  }
+
+  res.send(ordersList);
+});
+
+
+//GET ORDER TEKNISI
+router.get(`/task`, authJwt, async (req,res)=>{
+  if (req.auth.role === 'user') {
+      return res.status(401).json({message : 'anda tidak memiliki izin untuk mengakses laman ini', success:false});
+  } else {
+      const taskList = await Order.find({teknisi : `${req.auth.userId}`}).populate("user", "name")
+      .populate("city", "name")
+      .populate({ path: "orderItems", populate: "service" })
+      .populate("teknisi")
+      .sort({ dateOrdered: -1 });
+
+      if(!taskList) {
+          res.status(500).json({success:false});
+      }
+
+      res.send(taskList);
+  }  
 });
 
 //GETBYID
