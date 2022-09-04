@@ -6,6 +6,11 @@ const orderSchema = mongoose.Schema({
         ref : 'OrderItem',
         required : true
     }],
+    teknisi : {
+        type : mongoose.Schema.Types.ObjectId,
+        ref : 'User',
+        default : 'belum ada'
+    },
     detail : {
         type : String,
         required : true
