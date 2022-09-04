@@ -5,18 +5,22 @@ const { OrderItem } = require("../models/order-items");
 const authJwt = require("../helpers/jwt");
 //GET
 router.get(`/`,authJwt, async (req, res) => {
-  const ordersList = await Order.find()
-    .populate("user", "name")
-    .populate("city", "name")
-    .populate({ path: "orderItems", populate: "service" })
-    .populate("teknisi", "name")
-    .sort({ dateOrdered: -1 });
+  if (req.auth.role !== 'admin') {
+    return res.status(401).json({message : 'anda tidak memiliki izin untuk mengakses laman ini', success:false});
+  } else {
+    const ordersList = await Order.find()
+      .populate("user", "name")
+      .populate("city", "name")
+      .populate({ path: "orderItems", populate: "service" })
+      .populate("teknisi", "name")
+      .sort({ dateOrdered: -1 });
 
-  if (!ordersList) {
-    res.status(500).json({ success: false });
+    if (!ordersList) {
+      res.status(500).json({ success: false });
+    }
+
+    res.send(ordersList);
   }
-
-  res.send(ordersList);
 });
 
 //GETBYCITY
