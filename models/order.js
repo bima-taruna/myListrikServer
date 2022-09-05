@@ -8,8 +8,7 @@ const orderSchema = mongoose.Schema({
     }],
     teknisi : {
         type : mongoose.Schema.Types.ObjectId,
-        ref : 'User',
-        default : 'belum ada'
+        ref : 'User'
     },
     detail : {
         type : String,
