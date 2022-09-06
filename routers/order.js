@@ -96,11 +96,11 @@ router.post(`/`, authJwt, async (req, res) => {
       return newOrderItem._id
     })
 
-    const resolved = async () => {await orderItemsIds}
-    console.log(req.body.orderItems,resolved)
+    
+    console.log(req.body.orderItems,orderItemsIds)
 
     let order = new Order({
-      orderItems : resolved(),
+      orderItems : orderItemsIds(),
       detail: req.body.detail,
       city: req.auth.city,
       alamat: req.body.alamat,
