@@ -64,6 +64,7 @@ router.get(`/:id`,authJwt, async (req, res) => {
   const order = await Order.findById(req.params.id)
     .populate("user", "name")
     .populate("city", "name")
+    .populate({ path: 'orderItems', populate: {path : 'service' }})
     .sort({ dateOrdered: -1 });
 
   if (!order) {
@@ -86,7 +87,7 @@ router.post(`/`, authJwt, async (req, res) => {
   } else {
 
     let order = new Order({
-      orderItems: req.body.orderItems.id,
+      orderItems: req.body.orderItems._id,
       detail: req.body.detail,
       city: req.auth.city,
       alamat: req.body.alamat,
