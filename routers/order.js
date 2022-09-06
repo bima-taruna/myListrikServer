@@ -90,7 +90,7 @@ router.post(`/`, authJwt, async (req, res) => {
   } else {
     const orderItemsIds = async () => {
       let newOrderItem = new OrderItem({
-        service : req.body.orderItems[0].name
+        service : req.body.orderItems.id
       })
       newOrderItem = await newOrderItem.save();
       return newOrderItem._id
