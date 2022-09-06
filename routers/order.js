@@ -87,7 +87,7 @@ router.post(`/`, authJwt, async (req, res) => {
   } else {
 
     let order = new Order({
-      orderItems: req.body.orderItems._id,
+      orderItems: req.body.orderItems.id,
       detail: req.body.detail,
       city: req.auth.city,
       alamat: req.body.alamat,
