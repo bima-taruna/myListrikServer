@@ -95,7 +95,7 @@ router.post(`/`, authJwt, async (req, res) => {
       newOrderItem = await newOrderItem.save();
       return newOrderItem._id
     }
-
+    console.log(orderItemsIds)
     let order = new Order({
       orderItemsIds: orderItemsIds,
       detail: req.body.detail,
