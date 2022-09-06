@@ -100,7 +100,7 @@ router.post(`/`, authJwt, async (req, res) => {
     console.log(req.body.orderItems,orderItemsIds)
 
     let order = new Order({
-      orderItems : orderItemsIds,
+      orderItems : orderItemsIds(),
       detail: req.body.detail,
       city: req.auth.city,
       alamat: req.body.alamat,
