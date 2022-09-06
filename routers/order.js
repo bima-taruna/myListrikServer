@@ -11,7 +11,7 @@ router.get(`/`,authJwt, async (req, res) => {
     const ordersList = await Order.find()
       .populate("user", "name")
       .populate("city", "name")
-      .populate("orderItems.service", "name")
+      .populate({ path: 'orderItems.service', populate: {path : 'service'}})
       .populate("teknisi", "name")
       .sort({ dateOrdered: -1 });
 
