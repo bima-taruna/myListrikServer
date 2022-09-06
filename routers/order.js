@@ -47,7 +47,7 @@ router.get(`/task`, authJwt, async (req,res)=>{
   } else {
       const taskList = await Order.find({teknisi : `${req.auth.userId}`}).populate("user", "name")
       .populate("city", "name")
-      .populate({ path: "orderItems", populate: "service" })
+      .populate({ path: 'orderItems', populate: {path : 'service' }})
       .populate("teknisi")
       .sort({ dateOrdered: -1 });
 
