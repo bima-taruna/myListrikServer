@@ -88,7 +88,7 @@ router.post(`/`, authJwt, async (req, res) => {
         success: false,
       });
   } else {
-    const orderItemsIds = Promise(async () => {
+    const orderItemsIds = Promise.resolve(async () => {
       let newOrderItem = new OrderItem({
         service : req.body.orderItems.id
       })
