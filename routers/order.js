@@ -28,7 +28,7 @@ router.get(`/localorder`,authJwt, async (req, res) => {
   const ordersList = await Order.find({city : `${req.auth.city}`})
     .populate("user", "name")
     .populate("city", "name")
-    .populate("orderItems.service")
+    .populate({ path: "orderItems", populate: "service" })
     .populate("teknisi", "name")
     .sort({ dateOrdered: -1 });
 
