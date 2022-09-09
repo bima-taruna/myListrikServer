@@ -1,33 +1,33 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 const serviceSchema = mongoose.Schema({
-    name : {
-        type: String,
-        required : true
-    },
-    description : {
-        type: String,
-        default : ''
-    },
-    icon : {
-        type: String,
-        required : true
-    },
-    cloudinary_id : {
-        type: String
-    },
-    dateCreated : {
-        type: Date,
-        default: Date.now
-    }
-})
+  name: {
+    type: String,
+    required: true,
+  },
+  description: {
+    type: String,
+    default: "",
+  },
+  icon: {
+    type: String,
+    required: true,
+  },
+  cloudinary_id: {
+    type: String,
+  },
+  dateCreated: {
+    type: Date,
+    default: Date.now,
+  },
+});
 
-serviceSchema.virtual('id').get(function(){
-    return this._id.toHexString();
+serviceSchema.virtual("id").get(function () {
+  return this._id.toHexString();
 });
-  
-serviceSchema.set('toJSON',{
-    virtuals:true,
+
+serviceSchema.set("toJSON", {
+  virtuals: true,
 });
-  
-exports.Service = mongoose.model('Service', serviceSchema);
+
+exports.Service = mongoose.model("Service", serviceSchema);
