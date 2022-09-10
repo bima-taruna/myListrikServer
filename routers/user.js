@@ -66,6 +66,29 @@ router.get(`/teknisi`, authJwt, async (req, res) => {
   }
 });
 
+//GETBYROLE = Teknisi
+router.get(`/teknisi/all`, authJwt, async (req, res) => {
+  if (req.auth.role !== "admin") {
+    return res.status(401).json({
+      message: "anda tidak memiliki izin untuk mengakses laman ini",
+      success: false,
+    });
+  } else {
+    const usersList = await User.find({
+      role: "instalatir",
+    })
+      .populate("city")
+      .populate("perusahaan")
+      .select("-passwordHash");
+
+    if (!usersList) {
+      res.status(500).json({ success: false });
+    }
+
+    res.send(usersList);
+  }
+});
+
 //GETBYID
 router.get(`/:id`, authJwt, async (req, res) => {
   const user = await User.findById(req.params.id)
