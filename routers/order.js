@@ -134,7 +134,7 @@ router.put(`/:id`, authJwt, async (req, res) => {
   } else {
     let order = await Order.findById(req.params.id);
     const data = {
-      teknisi: req.body.teknisi || order.teknisi.id,
+      teknisi: req.body.teknisi || order.teknisi._id,
       status: req.body.status,
     };
 
