@@ -132,10 +132,10 @@ router.put(`/:id`, authJwt, async (req, res) => {
       success: false,
     });
   } else {
-    const order = await Order.findByIdAndUpdate(
+    let order = await Order.findByIdAndUpdate(
       req.params.id,
       {
-        teknisi: req.body.teknisi,
+        teknisi: req.body.teknisi || order.teknisi,
         status: req.body.status,
       },
       { new: true }
