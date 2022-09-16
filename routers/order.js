@@ -135,7 +135,7 @@ router.put(`/:id`, authJwt, async (req, res) => {
     let order = await Order.findByIdAndUpdate(
       req.params.id,
       {
-        teknisi: req.body.teknisi || order.teknisi,
+        teknisi: req.body.teknisi || order.teknisi.id,
         status: req.body.status,
       },
       { new: true }
