@@ -132,14 +132,13 @@ router.put(`/:id`, authJwt, async (req, res) => {
       success: false,
     });
   } else {
-    let order = await Order.findByIdAndUpdate(
-      req.params.id,
-      {
-        teknisi: req.body.teknisi || order.teknisi.id,
-        status: req.body.status,
-      },
-      { new: true }
-    );
+    let order = await Order.findById(req.params.id);
+    const data = {
+      teknisi: req.body.teknisi || order.teknisi.id,
+      status: req.body.status,
+    };
+
+    order = await Order.findByIdAndUpdate(req.params.id, data, { new: true });
     if (!order) {
       return res.status(400).send("status gagal diperbaharui");
     }
