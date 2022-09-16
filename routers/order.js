@@ -48,7 +48,7 @@ router.get(`/localorder`, authJwt, async (req, res) => {
 });
 
 //GET ORDER TEKNISI
-router.get(`/task`, authJwt, async (req, res) => {
+router.get(`/taskk`, authJwt, async (req, res) => {
   if (req.auth.role === "user") {
     return res.status(401).json({
       message: "anda tidak memiliki izin untuk mengakses laman ini",
