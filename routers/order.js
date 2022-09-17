@@ -190,12 +190,15 @@ router.delete("/:id", authJwt, (req, res) => {
 //GETORDERBYUSERID
 router.get(`/get/userorders/:userid`, authJwt, async (req, res) => {
   const userOrdersList = await Order.find({ user: req.params.userid })
+    .populate("user", "name")
+    .populate("city", "name")
     .populate({
       path: "orderItems",
       populate: {
         path: "service",
       },
     })
+    .populate("teknisi", "name")
     .sort({ dateOrdered: -1 });
   if (!userOrdersList) {
     res.status(500).json({ success: false });
