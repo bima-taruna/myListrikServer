@@ -188,8 +188,8 @@ router.delete("/:id", authJwt, (req, res) => {
 });
 
 //GETORDERBYUSERID
-router.get(`/get/user`, authJwt, async (req, res) => {
-  const userOrdersList = await Order.find({ user: `${req.auth.userId}` })
+router.get(`/get/userorders/:userid`, authJwt, async (req, res) => {
+  const userOrdersList = await Order.find({ user: req.params.userid })
     .populate("user", "name")
     .populate("city", "name")
     .populate({
