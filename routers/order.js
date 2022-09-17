@@ -33,18 +33,25 @@ router.get(`/`, authJwt, async (req, res) => {
 
 //GETBYCITY
 router.get(`/localorder`, authJwt, async (req, res) => {
-  const ordersList = await Order.find({ city: `${req.auth.city}` })
-    .populate("user", "name")
-    .populate("city", "name")
-    .populate({ path: "orderItems", populate: "service" })
-    .populate("teknisi", "name")
-    .sort({ dateOrdered: -1 });
+  if (req.auth.role !== "instalatir") {
+    return res.status(401).json({
+      message: "anda tidak memiliki izin untuk mengakses laman ini",
+      success: false,
+    });
+  } else {
+    const ordersList = await Order.find({ city: `${req.auth.city}` })
+      .populate("user", "name")
+      .populate("city", "name")
+      .populate({ path: "orderItems", populate: "service" })
+      .populate("teknisi", "name")
+      .sort({ dateOrdered: -1 });
 
-  if (!ordersList) {
-    res.status(500).json({ success: false });
+    if (!ordersList) {
+      res.status(500).json({ success: false });
+    }
+
+    res.send(ordersList);
   }
-
-  res.send(ordersList);
 });
 
 //GET ORDER TEKNISI
