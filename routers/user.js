@@ -75,7 +75,7 @@ router.get(`/teknisi/all`, authJwt, async (req, res) => {
     });
   } else {
     const usersList = await User.find({
-      role: "instalatir",
+      role: "teknisi",
     })
       .populate("city")
       .populate("perusahaan")
