@@ -155,35 +155,53 @@ router.put(`/:id`, authJwt, async (req, res) => {
 });
 
 //DELETE
-router.delete("/:id", authJwt, (req, res) => {
-  if (req.auth.role === "user" || req.auth.role === "teknisi") {
-    return res.status(401).json({
-      message: "anda tidak memiliki izin untuk mengakses laman ini",
+router.delete("/:id", authJwt, async (req, res) => {
+  try {
+    if (req.auth.role === "user" || req.auth.role === "teknisi") {
+      return res.status(401).json({
+        message: "anda tidak memiliki izin untuk mengakses laman ini",
+        success: false,
+      });
+    } else {
+      // Order.findByIdAndRemove(req.params.id)
+      //   .then(async (order) => {
+      //     if (order) {
+      //       await order.orderItems.map(async (orderItem) => {
+      //         await OrderItem.findByIdAndRemove(orderItem);
+      //       });
+      //       return res
+      //         .status(200)
+      //         .json({ success: true, message: "order berhasil dihapus!" });
+      //     } else {
+      //       return res.status(404).json({
+      //         success: true,
+      //         message: "order tidak ada!, order gagal dihapus!",
+      //       });
+      //     }
+      //   })
+      //   .catch((err) => {
+      //     res.status(400).json({
+      //       error: err,
+      //       success: false,
+      //     });
+      //   });
+      let order = await Order.findById(req.params.id);
+      if (order) {
+        await OrderItem.findByIdAndRemove(order.orderItems.id);
+        await Order.remove();
+        res.json(order);
+      } else {
+        return res.status(404).json({
+          success: false,
+          message: "order tidak ada!, order gagal dihapus!",
+        });
+      }
+    }
+  } catch (err) {
+    res.status(400).json({
+      error: err,
       success: false,
     });
-  } else {
-    Order.findByIdAndRemove(req.params.id)
-      .then(async (order) => {
-        if (order) {
-          await order.orderItems.map(async (orderItem) => {
-            await OrderItem.findByIdAndRemove(orderItem);
-          });
-          return res
-            .status(200)
-            .json({ success: true, message: "order berhasil dihapus!" });
-        } else {
-          return res.status(404).json({
-            success: true,
-            message: "order tidak ada!, order gagal dihapus!",
-          });
-        }
-      })
-      .catch((err) => {
-        res.status(400).json({
-          error: err,
-          success: false,
-        });
-      });
   }
 });
 

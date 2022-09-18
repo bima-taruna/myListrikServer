@@ -254,12 +254,12 @@ router.delete(`/:id`, authJwt, async (req, res) => {
         message: "anda tidak memiliki izin untuk mengakses laman ini",
         success: false,
       });
+    } else {
+      let user = await User.findById(req.params.id);
+      await cloudinary.uploader.destroy(user.cloudinary_id);
+      await user.remove();
+      res.json(user);
     }
-
-    let user = await User.findById(req.params.id);
-    await cloudinary.uploader.destroy(user.cloudinary_id);
-    await user.remove();
-    res.json(user);
   } catch (err) {
     console.log(err);
   }
