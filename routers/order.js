@@ -187,7 +187,7 @@ router.delete("/:id", authJwt, async (req, res) => {
       //   });
       let order = await Order.findById(req.params.id);
       if (order) {
-        await OrderItem.findByIdAndRemove(order.orderItems.id);
+        await OrderItem.findByIdAndDelete(order.orderItems[0]);
         await Order.deleteOne();
         res.json(order);
       } else {
