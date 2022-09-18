@@ -32,6 +32,7 @@ router.get(`/`, authJwt, async (req, res) => {
   } else {
     const usersList = await User.find()
       .select("-passwordHash")
+      .populate("perusahaan")
       .populate("city");
 
     if (!usersList) {
