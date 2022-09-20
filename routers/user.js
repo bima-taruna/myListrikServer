@@ -403,4 +403,36 @@ router.put(`/change-password/:id`, authJwt, async (req, res) => {
   }
 });
 
+router.put(`/forgotpassword`, authJwt, async (req, res) => {
+  try {
+    const { email } = req.body;
+    const secret = process.env.secret;
+    let user = await User.findOne({ email: email });
+    if (!user) {
+      return res.status(200).json({
+        status: false,
+        message: "Email tidak  tersedia",
+      });
+    }
+
+    const token = jwt.sign(
+      {
+        userId: user.id,
+      },
+      secret
+    );
+
+    user = await User.updateOne({ resetPasswordLink: token });
+
+    const templateEmail = {
+      from: "MY-LISTRIK",
+      to: email,
+      subject: "Link Reset Password",
+      html: `<p>silahkan klik link dibawah untuk reset password anda</p> <p>${process.env.CLIENT_URL}/resetpassword/${token}</p>`,
+    };
+  } catch (err) {
+    console.log(err);
+  }
+});
+
 module.exports = router;

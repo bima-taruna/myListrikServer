@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const { stringify } = require("uuid");
 const levels = ["user", "admin", "instalatir", "teknisi"];
 const isiPerusahaan = ["admin", "instalatir", "teknisi"];
 
@@ -44,6 +45,10 @@ const userSchema = mongoose.Schema({
   },
   cloudinary_id: {
     type: String,
+  },
+  resetPasswordLink: {
+    type: String,
+    default: "",
   },
 });
 
